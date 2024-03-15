@@ -5,6 +5,7 @@ let audioElement = new Audio('pasoori.mp3');
 let masterPlay = document.getElementById('play');
 //  console.log(masterPlay);
 let myProgressBar = document.getElementById('myProgressBar');
+masterSongName = document.getElementById('masterSongName');
 let gif = document.getElementById('gif');
 let songItem = Array.from(document.getElementsByClassName('songItem'));
 
@@ -80,6 +81,7 @@ Array.from(document.getElementsByClassName('songItemPlay')).forEach((element)=>{
          audioElement.src = `${filePath}`;
          var songName = songs[index] ['songName'];
          songItem.src = `${songName}`;
+         masterSongName.innerHTML = songs[songIndex].songName;
          audioElement.currentTime = 0;
          audioElement.play();
          masterPlay.classList.remove('fa-play-circle');

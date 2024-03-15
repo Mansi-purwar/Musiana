@@ -1,25 +1,25 @@
 console.log("Welcome to Musiana");
 
 let songIndex =0;
-let audioElement = new Audio('pasoori.mp3');
-let masterPlay = document.getElementById('play');
+let audioElement = new Audio('1.mp3');
+let masterPlay = document.getElementById('masterPlay');
 //  console.log(masterPlay);
 let myProgressBar = document.getElementById('myProgressBar');
-masterSongName = document.getElementById('masterSongName');
 let gif = document.getElementById('gif');
+let masterSongName = document.getElementById('masterSongName');
 let songItem = Array.from(document.getElementsByClassName('songItem'));
 
 let songs = [
-    {songName: "Chaand Baliya" , filePath:"CB.mp3"      , coverPath: "cover2.jpg"},
-    {songName: "No-Lie"        , filePath:"No-Lie.mp3"  , coverPath: "nolie.jpg"},
-    {songName: "Enna Sona" , filePath:"Enna-Sona.mp3"   , coverPath: "es.jpg"},
-    {songName: "8 Parche" , filePath:"8 Parche.mp3"     , coverPath: "8p.jpg"},
-    {songName: "Rockabye" , filePath:"Rockabye-.mp3"    , coverPath: "rockkabye.jpg"},
-    {songName: "Go-Down-Deh" , filePath:"Go-Down-Deh.mp3", coverPath: "godown.jpg"},
-    {songName: "Mi-Gente" , filePath:"Mi-Gente.mp3"     , coverPath: "mg.jpg"},
-    {songName: "Hawayein" , filePath:"Hawayein.mp3", coverPath: "hh.jpg"},
-    {songName: "Khairiyat" , filePath:"Khairiyat.mp3", coverPath: "ky.jpg"},
-    {songName: "Pasoori" , filePath:"pasoori.mp3", coverPath: "cover1.png"},
+    {songName: "Chaand Baliya" , filePath:"1.mp3"      , coverPath: "cover2.jpg"},
+    {songName: "No-Lie"        , filePath:"2.mp3"  , coverPath: "nolie.jpg"},
+    {songName: "Enna Sona" , filePath:"3.mp3"   , coverPath: "es.jpg"},
+    {songName: "8 Parche" , filePath:"4.mp3"     , coverPath: "parche 8.jpg"},
+    {songName: "Rockabye" , filePath:"5.mp3"    , coverPath: "rockkabye.jpg"},
+    {songName: "Go-Down-Deh" , filePath:"6.mp3", coverPath: "godown.jpg"},
+    {songName: "Mi-Gente" , filePath:"7.mp3"     , coverPath: "mg.jpg"},
+    {songName: "Hawayein" , filePath:"8.mp3", coverPath: "hh.jpg"},
+    {songName: "Khairiyat" , filePath:"9.mp3", coverPath: "ky.jpg"},
+    {songName: "Pasoori" , filePath:"10.mp3", coverPath: "cover1.png"},
    
 ]
 
@@ -29,7 +29,7 @@ songItem.forEach((element, i)=>{
 })
 
 
-// audioElement.play();
+// audioElement.play();  
 
 // handle play/pause
 
@@ -50,10 +50,10 @@ masterPlay.addEventListener('click',()=>{
 
 // //listen to events
  audioElement.addEventListener('timeupdate', ()=>{
-     console.log('timeupdate');
+    //  console.log('timeupdate');
 //     // update seekbar
      progress = parseInt((audioElement.currentTime/audioElement.duration)*100);
-      console.log(progress);
+    //   console.log(progress);
       myProgressBar.value = progress;
  })
 
@@ -74,28 +74,79 @@ Array.from(document.getElementsByClassName('songItemPlay')).forEach((element)=>{
     element.addEventListener('click',(e)=>{
         console.log(e.target);
          makeAllPlays();
-         index = parseInt(e.target.id);
+         songIndex = parseInt(e.target.id);
          e.target.classList.remove('fa-play-circle');
          e.target.classList.add('fa-pause-circle');
-         var filePath = songs[index]['filePath'];
-         audioElement.src = `${filePath}`;
-         var songName = songs[index] ['songName'];
-         songItem.src = `${songName}`;
-         masterSongName.innerHTML = songs[songIndex].songName;
+        //  var filePath = songs[songIndex]['filePath'];
+        //  audioElement.src = `${filePath}`;
+        //  var songName = songs[songIndex] ['songName'];
+        //  songItem.src = `${songName}`;
+        audioElement.src =`${songIndex+1}.mp3`
+        masterSongName.innerHTML = songs[songIndex].songName;
          audioElement.currentTime = 0;
          audioElement.play();
+         gif.style.opacity=1;
          masterPlay.classList.remove('fa-play-circle');
          masterPlay.classList.add('fa-pause-circle');
     })
 
-    // Array.from(document.getElementsByClassName('songName')).forEach((element)=>{
-    //     element.addEventListener('click' ,(e)=>{
-    //         console.log(e.target);
-    //         index = parseInt(e.target.id);
-    //         e.target.cl
-    //     })
+document.getElementById('next').addEventListener('click', ()=>{
+        if(songIndex>=9){
+            songIndex=0
+        }
+        else{
+            songIndex +=1;
+        }
+        audioElement.src =`${songIndex+1}.mp3`;
+        masterSongName.innerHTML = songs[songIndex].songName;
+        var currentPromise=false;    //Keeps track of active Promise
 
-    // }
+function playAudio(audioElement){
+    if(!currentPromise){    //normal behavior
+        audioElement.pause();
+        audioElement.currentTime = 0;
+        currentPromise = audioElement.play();    //Calls play. Will store a Promise object in newer versions of chrome;
+                                      //stores undefined in other browsers
+        if(currentPromise){    //Promise exists
+            currentPromise.then(function(){ //handle Promise completion
+                promiseComplete(audioElement);
+            });
+        }
+    }else{    //Wait for promise to complete
+        //Store additional information to be called
+        currentPromise.calledAgain = true;
+    }
+}
+
+function promiseComplete(n){
+    var callAgain = currentPromise.calledAgain;    //get stored information
+    currentPromise = false;    //reset currentPromise variable
+    if(callAgain){
+        playAudio(n);
+    }
+}
+        gif.style.opacity=1;
+        masterPlay.classList.remove('fa-play-circle');
+        masterPlay.classList.add('fa-pause-circle');
+})     
+    
+    
+  
+document.getElementById('previous').addEventListener('click', ()=>{
+    if(songIndex<=0){
+        songIndex=0
+    }
+    else{
+        songIndex -=1;
+    }
+    audioElement.src =`${songIndex+1}.mp3`;
+    masterSongName.innerHTML = songs[songIndex].songName;
+    audioElement.currentTime = 0;
+    audioElement.play();
+    gif.style.opacity=1;
+    masterPlay.classList.remove('fa-play-circle');
+    masterPlay.classList.add('fa-pause-circle');
+})
 
 
 })
